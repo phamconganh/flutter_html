@@ -12,7 +12,7 @@ dependencies:
   html: ^0.15.3
 
   # Plugin for parsing css
-  csslib: ^0.17.2
+  csslib: '>=0.17.2 <2.0.0'
 
   # Plugin for firstWhereOrNull extension on lists
   collection: ^1.17.0
