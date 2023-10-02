@@ -94,6 +94,7 @@ class StyledElementBuiltIn extends HtmlExtension {
       style: Style(),
     );
 
+    /// TODO: https://www.w3schools.com/jsref/ -> HTML Elements with Examples -> get other inline css property. (example: 'align' in 'div', 'p' )
     switch (context.elementName) {
       case "abbr":
       case "acronym":
@@ -175,8 +176,12 @@ class StyledElementBuiltIn extends HtmlExtension {
       case "dfn":
         continue italics;
       case "div":
+        final attributes = context.attributes;
         styledElement.style = Style(
           display: Display.block,
+          alignment: attributes.containsKey('align')
+              ? ExpressionMapping.alignmentFromString(attributes['align'])
+              : null,
         );
         break;
       case "dl":
@@ -229,50 +234,74 @@ class StyledElementBuiltIn extends HtmlExtension {
         );
         break;
       case "h1":
+        final attributes = context.attributes;
         styledElement.style = Style(
           fontSize: FontSize(2, Unit.em),
           fontWeight: FontWeight.bold,
           margin: Margins.symmetric(vertical: 0.67, unit: Unit.em),
           display: Display.block,
+          alignment: attributes.containsKey('align')
+              ? ExpressionMapping.alignmentFromString(attributes['align'])
+              : null,
         );
         break;
       case "h2":
+        final attributes = context.attributes;
         styledElement.style = Style(
           fontSize: FontSize(1.5, Unit.em),
           fontWeight: FontWeight.bold,
           margin: Margins.symmetric(vertical: 0.83, unit: Unit.em),
           display: Display.block,
+          alignment: attributes.containsKey('align')
+              ? ExpressionMapping.alignmentFromString(attributes['align'])
+              : null,
         );
         break;
       case "h3":
+        final attributes = context.attributes;
         styledElement.style = Style(
           fontSize: FontSize(1.17, Unit.em),
           fontWeight: FontWeight.bold,
           margin: Margins.symmetric(vertical: 1, unit: Unit.em),
           display: Display.block,
+          alignment: attributes.containsKey('align')
+              ? ExpressionMapping.alignmentFromString(attributes['align'])
+              : null,
         );
         break;
       case "h4":
+        final attributes = context.attributes;
         styledElement.style = Style(
           fontWeight: FontWeight.bold,
           margin: Margins.symmetric(vertical: 1.33, unit: Unit.em),
           display: Display.block,
+          alignment: attributes.containsKey('align')
+              ? ExpressionMapping.alignmentFromString(attributes['align'])
+              : null,
         );
         break;
       case "h5":
+        final attributes = context.attributes;
         styledElement.style = Style(
           fontSize: FontSize(0.83, Unit.em),
           fontWeight: FontWeight.bold,
           margin: Margins.symmetric(vertical: 1.67, unit: Unit.em),
           display: Display.block,
+          alignment: attributes.containsKey('align')
+              ? ExpressionMapping.alignmentFromString(attributes['align'])
+              : null,
         );
         break;
       case "h6":
+        final attributes = context.attributes;
         styledElement.style = Style(
           fontSize: FontSize(0.67, Unit.em),
           fontWeight: FontWeight.bold,
           margin: Margins.symmetric(vertical: 2.33, unit: Unit.em),
           display: Display.block,
+          alignment: attributes.containsKey('align')
+              ? ExpressionMapping.alignmentFromString(attributes['align'])
+              : null,
         );
         break;
       case "header":
@@ -308,6 +337,8 @@ class StyledElementBuiltIn extends HtmlExtension {
       case "kbd":
         continue monospace;
       case "li":
+
+        /// TODO: value
         styledElement.style = Style(
           display: Display.listItem,
         );
@@ -334,6 +365,8 @@ class StyledElementBuiltIn extends HtmlExtension {
         );
         break;
       case "ol":
+
+        /// TODO: compact, reversed, start, type
         styledElement.style = Style(
           display: Display.block,
           listStyleType: ListStyleType.decimal,
@@ -345,6 +378,8 @@ class StyledElementBuiltIn extends HtmlExtension {
         );
         break;
       case "ul":
+
+        /// TODO: compact, type
         styledElement.style = Style(
           display: Display.block,
           listStyleType: ListStyleType.disc,
@@ -356,9 +391,13 @@ class StyledElementBuiltIn extends HtmlExtension {
         );
         break;
       case "p":
+        final attributes = context.attributes;
         styledElement.style = Style(
           margin: Margins.symmetric(vertical: 1, unit: Unit.em),
           display: Display.block,
+          alignment: attributes.containsKey('align')
+              ? ExpressionMapping.alignmentFromString(attributes['align'])
+              : null,
         );
         break;
       case "pre":
@@ -427,25 +466,27 @@ class StyledElementBuiltIn extends HtmlExtension {
 
   @override
   InlineSpan build(ExtensionContext context) {
-    if (context.styledElement!.style.display == Display.listItem ||
-        ((context.styledElement!.style.display == Display.block ||
-                context.styledElement!.style.display == Display.inlineBlock) &&
-            (context.styledElement!.children.isNotEmpty ||
+    final styledElement = context.styledElement!;
+
+    if (styledElement.style.display == Display.listItem ||
+        ((styledElement.style.display == Display.block ||
+                styledElement.style.display == Display.inlineBlock) &&
+            (styledElement.children.isNotEmpty ||
                 context.elementName == "hr"))) {
       return WidgetSpan(
         alignment: PlaceholderAlignment.baseline,
         baseline: TextBaseline.alphabetic,
         child: CssBoxWidget.withInlineSpanChildren(
           key: AnchorKey.of(context.parser.key, context.styledElement),
-          style: context.styledElement!.style,
+          style: styledElement.style,
           shrinkWrap: context.parser.shrinkWrap,
-          childIsReplaced: ["iframe", "img", "video", "audio"]
-              .contains(context.styledElement!.name),
+          childIsReplaced:
+              ["iframe", "img", "video", "audio"].contains(styledElement.name),
           children: context.builtChildrenMap!.entries
               .expandIndexed((i, child) => [
                     child.value,
                     if (context.parser.shrinkWrap &&
-                        i != context.styledElement!.children.length - 1 &&
+                        i != styledElement.children.length - 1 &&
                         (child.key.style.display == Display.block ||
                             child.key.style.display == Display.listItem) &&
                         child.key.element?.localName != "html" &&
@@ -458,13 +499,13 @@ class StyledElementBuiltIn extends HtmlExtension {
     }
 
     return TextSpan(
-      style: context.styledElement!.style.generateTextStyle(),
+      style: styledElement.style.generateTextStyle(),
       children: context.builtChildrenMap!.entries
           .expandIndexed((index, child) => [
                 child.value,
                 if (context.parser.shrinkWrap &&
                     child.key.style.display == Display.block &&
-                    index != context.styledElement!.children.length - 1 &&
+                    index != styledElement.children.length - 1 &&
                     child.key.element?.parent?.localName != "th" &&
                     child.key.element?.parent?.localName != "td" &&
                     child.key.element?.localName != "html" &&

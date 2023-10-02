@@ -1,8 +1,10 @@
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_html/src/css_parser.dart';
 
 class CssBoxWidget extends StatelessWidget {
   const CssBoxWidget({
@@ -51,6 +53,17 @@ class CssBoxWidget extends StatelessWidget {
   final bool top;
 
   @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty<Style>('style', style));
+    properties.add(EnumProperty('textDirection', textDirection));
+    properties
+        .add(DiagnosticsProperty<bool>('childIsReplaced', childIsReplaced));
+    properties.add(DiagnosticsProperty<bool>('shrinkWrap', shrinkWrap));
+    properties.add(DiagnosticsProperty<bool>('top', top));
+  }
+
+  @override
   Widget build(BuildContext context) {
     final markerBox = style.listStylePosition == ListStylePosition.outside
         ? _generateMarkerBoxSpan(style)
@@ -72,6 +85,10 @@ class CssBoxWidget extends StatelessWidget {
       shrinkWrap: shrinkWrap,
       children: [
         Container(
+          alignment: style.display == Display.block
+              ? (ExpressionMapping.textAlignToAlignment(style.textAlign) ??
+                  style.alignment)
+              : style.alignment,
           decoration: BoxDecoration(
             border: style.border,
             color: style.backgroundColor, //Colors the padding and content boxes
@@ -179,7 +196,7 @@ class CssBoxWidget extends StatelessWidget {
 }
 
 class _CSSBoxRenderer extends MultiChildRenderObjectWidget {
-  _CSSBoxRenderer({
+  const _CSSBoxRenderer({
     Key? key,
     required super.children,
     required this.display,
@@ -436,6 +453,20 @@ class RenderCSSBox extends RenderBox
       child = childParentData.nextSibling;
     }
     return extent;
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(EnumProperty('_display', _display));
+    properties.add(DoubleProperty('_width', _width.value));
+    properties.add(DoubleProperty('_height', _height.value));
+    properties.add(DiagnosticsProperty<Margins>('_margins', _margins));
+    properties.add(DiagnosticsProperty<Size>('_borderSize', _borderSize));
+    properties.add(DiagnosticsProperty<Size>('_paddingSize', _paddingSize));
+    properties.add(EnumProperty('_textDirection', _textDirection));
+    properties.add(DiagnosticsProperty<bool>('_childIsReplaced', _childIsReplaced));
+    properties.add(DiagnosticsProperty<bool>('_shrinkWrap', _shrinkWrap));
   }
 
   @override

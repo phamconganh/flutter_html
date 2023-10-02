@@ -10,9 +10,11 @@ import 'package:html/dom.dart' as dom;
 /// library.
 class AudioHtmlExtension extends HtmlExtension {
   final AudioControllerCallback? audioControllerCallback;
+  final OptionsTranslation? optionsTranslation;
 
   const AudioHtmlExtension({
     this.audioControllerCallback,
+    this.optionsTranslation,
   });
 
   @override
@@ -24,6 +26,7 @@ class AudioHtmlExtension extends HtmlExtension {
         child: AudioWidget(
       context: context,
       callback: audioControllerCallback,
+      optionsTranslation: optionsTranslation,
     ));
   }
 }
@@ -35,11 +38,13 @@ typedef AudioControllerCallback = void Function(
 class AudioWidget extends StatefulWidget {
   final ExtensionContext context;
   final AudioControllerCallback? callback;
+  final OptionsTranslation? optionsTranslation;
 
   const AudioWidget({
     Key? key,
     required this.context,
     this.callback,
+    this.optionsTranslation,
   }) : super(key: key);
 
   @override
@@ -69,6 +74,7 @@ class _AudioWidgetState extends State<AudioWidget> {
         looping: widget.context.attributes['loop'] != null,
         showControls: widget.context.attributes['controls'] != null,
         autoInitialize: true,
+        optionsTranslation: widget.optionsTranslation,
       );
       widget.callback?.call(
         widget.context.element,

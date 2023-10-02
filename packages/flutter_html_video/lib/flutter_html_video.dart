@@ -12,9 +12,11 @@ import 'dart:io';
 /// library.
 class VideoHtmlExtension extends HtmlExtension {
   final VideoControllerCallback? videoControllerCallback;
+  final OptionsTranslation? optionsTranslation;
 
   const VideoHtmlExtension({
     this.videoControllerCallback,
+    this.optionsTranslation,
   });
 
   @override
@@ -26,6 +28,7 @@ class VideoHtmlExtension extends HtmlExtension {
         child: VideoWidget(
       context: context,
       callback: videoControllerCallback,
+      optionsTranslation: optionsTranslation,
     ));
   }
 }
@@ -39,6 +42,7 @@ class VideoWidget extends StatefulWidget {
   final VideoControllerCallback? callback;
   final List<DeviceOrientation>? deviceOrientationsOnEnterFullScreen;
   final List<DeviceOrientation> deviceOrientationsAfterFullScreen;
+  final OptionsTranslation? optionsTranslation;
 
   const VideoWidget({
     Key? key,
@@ -46,6 +50,7 @@ class VideoWidget extends StatefulWidget {
     this.callback,
     this.deviceOrientationsOnEnterFullScreen,
     this.deviceOrientationsAfterFullScreen = DeviceOrientation.values,
+    this.optionsTranslation,
   }) : super(key: key);
 
   @override
@@ -103,6 +108,7 @@ class _VideoWidgetState extends State<VideoWidget> {
             widget.deviceOrientationsOnEnterFullScreen,
         deviceOrientationsAfterFullScreen:
             widget.deviceOrientationsAfterFullScreen,
+        optionsTranslation: widget.optionsTranslation,
       );
       widget.callback?.call(
         widget.context.element,

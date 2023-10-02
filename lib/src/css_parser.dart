@@ -574,6 +574,10 @@ Style declarationsToStyle(Map<String, List<css.Expression>> declarations) {
           style.textAlign =
               ExpressionMapping.expressionToTextAlign(value.first);
           break;
+        case 'align':
+          style.alignment =
+              ExpressionMapping.expressionToAlignment(value.first);
+          break;
         case 'text-decoration':
           List<css.LiteralTerm?>? textDecorationList =
               value.whereType<css.LiteralTerm>().toList();
@@ -941,7 +945,7 @@ class ExpressionMapping {
                     nextExp.text == "0")) {
               try {
                 fontFeatures.add(FontFeature(exp.text,
-                  nextExp.text == "on" || nextExp.text == "1" ? 1 : 0));
+                    nextExp.text == "on" || nextExp.text == "1" ? 1 : 0));
               } catch (_) {}
             } else {
               try {
@@ -1267,6 +1271,40 @@ class ExpressionMapping {
       }
     }
     return TextAlign.start;
+  }
+
+  static Alignment? textAlignToAlignment(TextAlign? textAlign) {
+    switch (textAlign) {
+      case TextAlign.center:
+        return Alignment.center;
+      case TextAlign.start:
+        return Alignment.centerLeft;
+      case TextAlign.end:
+        return Alignment.centerRight;
+      default:
+    }
+    return null;
+  }
+
+  static Alignment? expressionToAlignment(css.Expression value) {
+    if (value is css.LiteralTerm) {
+      return alignmentFromString(value.text);
+    }
+    return null;
+  }
+
+  static Alignment? alignmentFromString(String? value) {
+    switch (value) {
+      case "center":
+        return Alignment.center;
+      case "left":
+        return Alignment.centerLeft;
+      case "right":
+        return Alignment.centerRight;
+      // case "justify":
+      //   return Alignment.justify;
+    }
+    return null;
   }
 
   static TextDecoration expressionToTextDecorationLine(
