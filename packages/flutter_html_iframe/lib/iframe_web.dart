@@ -24,22 +24,19 @@ class IframeWidget extends StatelessWidget {
         double.tryParse(extensionContext.attributes['width'] ?? "");
     final givenHeight =
         double.tryParse(extensionContext.attributes['height'] ?? "");
+    final width = givenWidth ?? (givenHeight ?? 150) * 2;
+    final height = givenHeight ?? (givenWidth ?? 300) / 2;
     final HTMLIFrameElement iframe = HTMLIFrameElement()
-      ..width = (givenWidth ?? (givenHeight ?? 150) * 2).toString()
-      ..height = (givenHeight ?? (givenWidth ?? 300) / 2).toString()
+      ..width = width.toString()
+      ..height = height.toString()
       ..src = extensionContext.attributes['src'] ?? ""
       ..style.border = 'none';
     final String createdViewId = _getRandString(10);
     ui.platformViewRegistry
         .registerViewFactory(createdViewId, (int viewId) => iframe);
     return SizedBox(
-      width: double.tryParse(extensionContext.attributes['width'] ?? "") ??
-          (double.tryParse(extensionContext.attributes['height'] ?? "") ??
-                  150) *
-              2,
-      height: double.tryParse(extensionContext.attributes['height'] ?? "") ??
-          (double.tryParse(extensionContext.attributes['width'] ?? "") ?? 300) /
-              2,
+      width: width,
+      height: height,
       child: CssBoxWidget(
         style: extensionContext.styledElement!.style,
         childIsReplaced: true,

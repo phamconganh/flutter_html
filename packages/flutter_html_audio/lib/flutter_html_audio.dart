@@ -24,10 +24,9 @@ class AudioHtmlExtension extends HtmlExtension {
   InlineSpan build(ExtensionContext context) {
     return WidgetSpan(
         child: AudioWidget(
-      context: context,
-      callback: audioControllerCallback,
-      optionsTranslation: optionsTranslation
-    ));
+            context: context,
+            callback: audioControllerCallback,
+            optionsTranslation: optionsTranslation));
   }
 }
 
@@ -58,9 +57,10 @@ class _AudioWidgetState extends State<AudioWidget> {
 
   @override
   void initState() {
+    final attributes = widget.context.attributes;
+    final src = attributes['src'];
     sources = <String?>[
-      if (widget.context.attributes['src'] != null)
-        widget.context.attributes['src'],
+      if (src != null) src,
       ...ReplacedElement.parseMediaSources(widget.context.node.children),
     ];
 
@@ -71,9 +71,9 @@ class _AudioWidgetState extends State<AudioWidget> {
         audioController = VideoPlayerController.networkUrl(uri);
         chewieAudioController = ChewieAudioController(
           videoPlayerController: audioController!,
-          autoPlay: widget.context.attributes['autoplay'] != null,
-          looping: widget.context.attributes['loop'] != null,
-          showControls: widget.context.attributes['controls'] != null,
+          autoPlay: attributes['autoplay'] != null,
+          looping: attributes['loop'] != null,
+          showControls: attributes['controls'] != null,
           autoInitialize: true,
           optionsTranslation: widget.optionsTranslation,
         );

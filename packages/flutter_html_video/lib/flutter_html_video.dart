@@ -66,9 +66,10 @@ class _VideoWidgetState extends State<VideoWidget> {
   @override
   void initState() {
     final attributes = widget.context.attributes;
+    final src = attributes['src'];
 
     final sources = <String?>[
-      if (attributes['src'] != null) attributes['src'],
+      if (src != null) src,
       ...ReplacedElement.parseMediaSources(widget.context.node.children),
     ];
 
@@ -92,12 +93,12 @@ class _VideoWidgetState extends State<VideoWidget> {
             _videoController = VideoPlayerController.networkUrl(sourceUri);
             break;
         }
+        final poster = attributes['poster'];
         _chewieController = ChewieController(
           videoPlayerController: _videoController!,
-          placeholder:
-              attributes['poster'] != null && attributes['poster']!.isNotEmpty
-                  ? Image.network(attributes['poster']!)
-                  : Container(color: Colors.black),
+          placeholder: poster != null && poster.isNotEmpty
+              ? Image.network(poster)
+              : Container(color: Colors.black),
           autoPlay: attributes['autoplay'] != null,
           looping: attributes['loop'] != null,
           showControls: attributes['controls'] != null,

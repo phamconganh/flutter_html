@@ -303,10 +303,11 @@ class _HtmlParserState extends State<HtmlParser> {
       }
     });
 
+    final attributes = tree.attributes;
     // Apply inline styles
-    if (tree.attributes.containsKey("style")) {
+    if (attributes.containsKey("style")) {
       final newStyle =
-          inlineCssToStyle(tree.attributes['style'], widget.onCssParseError);
+          inlineCssToStyle(attributes['style'], widget.onCssParseError);
       if (newStyle != null) {
         tree.style = tree.style.merge(newStyle);
       }

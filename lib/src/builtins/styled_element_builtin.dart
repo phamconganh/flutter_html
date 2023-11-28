@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/src/anchor.dart';
@@ -94,6 +96,8 @@ class StyledElementBuiltIn extends HtmlExtension {
       style: Style(),
     );
 
+    LinkedHashMap<String, String>? attributes;
+
     /// TODO: https://www.w3schools.com/jsref/ -> HTML Elements with Examples -> get other inline css property. (example: 'align' in 'div', 'p' )
     switch (context.elementName) {
       case "abbr":
@@ -122,10 +126,10 @@ class StyledElementBuiltIn extends HtmlExtension {
         );
         break;
       case "bdo":
-        TextDirection textDirection =
-            ((context.attributes["dir"] ?? "ltr") == "rtl")
-                ? TextDirection.rtl
-                : TextDirection.ltr;
+        attributes ??= context.attributes;
+        TextDirection textDirection = ((attributes["dir"] ?? "ltr") == "rtl")
+            ? TextDirection.rtl
+            : TextDirection.ltr;
         styledElement.style = Style(
           direction: textDirection,
         );
@@ -176,7 +180,7 @@ class StyledElementBuiltIn extends HtmlExtension {
       case "dfn":
         continue italics;
       case "div":
-        final attributes = context.attributes;
+        attributes ??= context.attributes;
         styledElement.style = Style(
           display: Display.block,
           alignment: attributes.containsKey('align')
@@ -219,22 +223,21 @@ class StyledElementBuiltIn extends HtmlExtension {
         );
         break;
       case "font":
+        attributes ??= context.attributes;
+        String? color = attributes['color'];
+        String? size = attributes['size'];
         styledElement.style = Style(
-          color: context.attributes['color'] != null
-              ? context.attributes['color']!.startsWith("#")
-                  ? ExpressionMapping.stringToColor(
-                      context.attributes['color']!)
-                  : ExpressionMapping.namedColorToColor(
-                      context.attributes['color']!)
+          color: color != null
+              ? color.startsWith("#")
+                  ? ExpressionMapping.stringToColor(color)
+                  : ExpressionMapping.namedColorToColor(color)
               : null,
-          fontFamily: context.attributes['face']?.split(",").first,
-          fontSize: context.attributes['size'] != null
-              ? numberToFontSize(context.attributes['size']!)
-              : null,
+          fontFamily: attributes['face']?.split(",").first,
+          fontSize: size != null ? numberToFontSize(size) : null,
         );
         break;
       case "h1":
-        final attributes = context.attributes;
+        attributes ??= context.attributes;
         styledElement.style = Style(
           fontSize: FontSize(2, Unit.em),
           fontWeight: FontWeight.bold,
@@ -246,7 +249,7 @@ class StyledElementBuiltIn extends HtmlExtension {
         );
         break;
       case "h2":
-        final attributes = context.attributes;
+        attributes ??= context.attributes;
         styledElement.style = Style(
           fontSize: FontSize(1.5, Unit.em),
           fontWeight: FontWeight.bold,
@@ -258,7 +261,7 @@ class StyledElementBuiltIn extends HtmlExtension {
         );
         break;
       case "h3":
-        final attributes = context.attributes;
+        attributes ??= context.attributes;
         styledElement.style = Style(
           fontSize: FontSize(1.17, Unit.em),
           fontWeight: FontWeight.bold,
@@ -270,7 +273,7 @@ class StyledElementBuiltIn extends HtmlExtension {
         );
         break;
       case "h4":
-        final attributes = context.attributes;
+        attributes ??= context.attributes;
         styledElement.style = Style(
           fontWeight: FontWeight.bold,
           margin: Margins.symmetric(vertical: 1.33, unit: Unit.em),
@@ -281,7 +284,7 @@ class StyledElementBuiltIn extends HtmlExtension {
         );
         break;
       case "h5":
-        final attributes = context.attributes;
+        attributes ??= context.attributes;
         styledElement.style = Style(
           fontSize: FontSize(0.83, Unit.em),
           fontWeight: FontWeight.bold,
@@ -293,7 +296,7 @@ class StyledElementBuiltIn extends HtmlExtension {
         );
         break;
       case "h6":
-        final attributes = context.attributes;
+        attributes ??= context.attributes;
         styledElement.style = Style(
           fontSize: FontSize(0.67, Unit.em),
           fontWeight: FontWeight.bold,
@@ -391,7 +394,7 @@ class StyledElementBuiltIn extends HtmlExtension {
         );
         break;
       case "p":
-        final attributes = context.attributes;
+        attributes ??= context.attributes;
         styledElement.style = Style(
           margin: Margins.symmetric(vertical: 1, unit: Unit.em),
           display: Display.block,

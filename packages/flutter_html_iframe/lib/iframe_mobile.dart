@@ -20,7 +20,8 @@ class IframeWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final WebViewController controller = WebViewController();
 
-    final sandboxMode = extensionContext.attributes["sandbox"];
+    final attributes = extensionContext.attributes;
+    final sandboxMode = attributes["sandbox"];
     controller.setJavaScriptMode(
         sandboxMode == null || sandboxMode.contains("allow-scripts")
             ? JavaScriptMode.unrestricted
@@ -31,10 +32,8 @@ class IframeWidget extends StatelessWidget {
     }
 
     final UniqueKey key = UniqueKey();
-    final givenWidth =
-        double.tryParse(extensionContext.attributes['width'] ?? "");
-    final givenHeight =
-        double.tryParse(extensionContext.attributes['height'] ?? "");
+    final givenWidth = double.tryParse(attributes['width'] ?? "");
+    final givenHeight = double.tryParse(attributes['height'] ?? "");
 
     Uri? srcUri;
 

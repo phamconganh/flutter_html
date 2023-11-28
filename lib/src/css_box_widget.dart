@@ -462,7 +462,8 @@ class RenderCSSBox extends RenderBox
     properties.add(DiagnosticsProperty<Size>('_borderSize', _borderSize));
     properties.add(DiagnosticsProperty<Size>('_paddingSize', _paddingSize));
     properties.add(EnumProperty('_textDirection', _textDirection));
-    properties.add(DiagnosticsProperty<bool>('_childIsReplaced', _childIsReplaced));
+    properties
+        .add(DiagnosticsProperty<bool>('_childIsReplaced', _childIsReplaced));
     properties.add(DiagnosticsProperty<bool>('_shrinkWrap', _shrinkWrap));
   }
 
