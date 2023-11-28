@@ -78,43 +78,44 @@ class _VideoWidgetState extends State<VideoWidget> {
     if (sources.isNotEmpty && sources.first != null) {
       _width = givenWidth ?? (givenHeight ?? 150) * 2;
       _height = givenHeight ?? (givenWidth ?? 300) / 2;
-      Uri sourceUri = Uri.parse(sources.first!);
-      switch (sourceUri.scheme) {
-        case 'asset':
-          _videoController = VideoPlayerController.asset(sourceUri.path);
-          break;
-        case 'file':
-          _videoController =
-              VideoPlayerController.file(File.fromUri(sourceUri));
-          break;
-        default:
-          _videoController =
-              VideoPlayerController.network(sourceUri.toString());
-          break;
+      Uri? sourceUri = Uri.tryParse(sources.first!);
+      if (sourceUri != null) {
+        switch (sourceUri.scheme) {
+          case 'asset':
+            _videoController = VideoPlayerController.asset(sourceUri.path);
+            break;
+          case 'file':
+            _videoController =
+                VideoPlayerController.file(File.fromUri(sourceUri));
+            break;
+          default:
+            _videoController = VideoPlayerController.networkUrl(sourceUri);
+            break;
+        }
+        _chewieController = ChewieController(
+          videoPlayerController: _videoController!,
+          placeholder:
+              attributes['poster'] != null && attributes['poster']!.isNotEmpty
+                  ? Image.network(attributes['poster']!)
+                  : Container(color: Colors.black),
+          autoPlay: attributes['autoplay'] != null,
+          looping: attributes['loop'] != null,
+          showControls: attributes['controls'] != null,
+          autoInitialize: true,
+          aspectRatio:
+              _width == null || _height == null ? null : _width! / _height!,
+          deviceOrientationsOnEnterFullScreen:
+              widget.deviceOrientationsOnEnterFullScreen,
+          deviceOrientationsAfterFullScreen:
+              widget.deviceOrientationsAfterFullScreen,
+          optionsTranslation: widget.optionsTranslation,
+        );
+        widget.callback?.call(
+          widget.context.element,
+          _chewieController!,
+          _videoController!,
+        );
       }
-      _chewieController = ChewieController(
-        videoPlayerController: _videoController!,
-        placeholder:
-            attributes['poster'] != null && attributes['poster']!.isNotEmpty
-                ? Image.network(attributes['poster']!)
-                : Container(color: Colors.black),
-        autoPlay: attributes['autoplay'] != null,
-        looping: attributes['loop'] != null,
-        showControls: attributes['controls'] != null,
-        autoInitialize: true,
-        aspectRatio:
-            _width == null || _height == null ? null : _width! / _height!,
-        deviceOrientationsOnEnterFullScreen:
-            widget.deviceOrientationsOnEnterFullScreen,
-        deviceOrientationsAfterFullScreen:
-            widget.deviceOrientationsAfterFullScreen,
-        optionsTranslation: widget.optionsTranslation,
-      );
-      widget.callback?.call(
-        widget.context.element,
-        _chewieController!,
-        _videoController!,
-      );
     }
     super.initState();
   }

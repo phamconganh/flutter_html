@@ -26,7 +26,7 @@ class AudioHtmlExtension extends HtmlExtension {
         child: AudioWidget(
       context: context,
       callback: audioControllerCallback,
-      optionsTranslation: optionsTranslation,
+      optionsTranslation: optionsTranslation
     ));
   }
 }
@@ -65,22 +65,24 @@ class _AudioWidgetState extends State<AudioWidget> {
     ];
 
     if (sources.isNotEmpty && sources.first != null) {
-      audioController = VideoPlayerController.network(
-        sources.first ?? "",
-      );
-      chewieAudioController = ChewieAudioController(
-        videoPlayerController: audioController!,
-        autoPlay: widget.context.attributes['autoplay'] != null,
-        looping: widget.context.attributes['loop'] != null,
-        showControls: widget.context.attributes['controls'] != null,
-        autoInitialize: true,
-        optionsTranslation: widget.optionsTranslation,
-      );
-      widget.callback?.call(
-        widget.context.element,
-        chewieAudioController!,
-        audioController!,
-      );
+      final src = sources.first!;
+      final uri = Uri.tryParse(src);
+      if (uri != null) {
+        audioController = VideoPlayerController.networkUrl(uri);
+        chewieAudioController = ChewieAudioController(
+          videoPlayerController: audioController!,
+          autoPlay: widget.context.attributes['autoplay'] != null,
+          looping: widget.context.attributes['loop'] != null,
+          showControls: widget.context.attributes['controls'] != null,
+          autoInitialize: true,
+          optionsTranslation: widget.optionsTranslation,
+        );
+        widget.callback?.call(
+          widget.context.element,
+          chewieAudioController!,
+          audioController!,
+        );
+      }
     }
     super.initState();
   }
