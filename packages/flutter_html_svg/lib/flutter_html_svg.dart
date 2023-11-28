@@ -1,10 +1,9 @@
 library flutter_html_svg;
 
+import 'dart:collection';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-// ignore: implementation_imports
-import 'package:flutter_html/src/tree/image_element.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 // TODO re-add MultipleGestureDetector for image taps in this extension
@@ -43,20 +42,21 @@ class SvgHtmlExtension extends HtmlExtension {
       return true;
     }
 
-    return _matchesSvgNetworkSource(context) ||
-        _matchesSvgAssetUri(context) ||
-        _matchesSvgDataUri(context);
+    final attributes = context.attributes;
+    return _matchesSvgNetworkSource(context, attributes) ||
+        _matchesSvgAssetUri(context, attributes) ||
+        _matchesSvgDataUri(context, attributes);
   }
 
   /// Matches an <img> tag with encoded svg data.
-  bool _matchesSvgDataUri(ExtensionContext context) {
-    final attributes = context.attributes;
-
-    if (attributes['src'] == null) {
+  bool _matchesSvgDataUri(
+      ExtensionContext context, LinkedHashMap<String, String> attributes) {
+    final src = attributes['src'];
+    if (src == null) {
       return false;
     }
 
-    final dataUri = _dataUriFormat.firstMatch(attributes['src']!);
+    final dataUri = _dataUriFormat.firstMatch(src);
 
     return context.elementName == "img" &&
         dataUri != null &&
@@ -66,40 +66,41 @@ class SvgHtmlExtension extends HtmlExtension {
   }
 
   /// Matches an <img> tag with an svg network image
-  bool _matchesSvgNetworkSource(ExtensionContext context) {
-    final attributes = context.attributes;
-
-    if (attributes['src'] == null) {
-      return false;
-    }
-
-    final src = Uri.tryParse(attributes['src']!);
+  bool _matchesSvgNetworkSource(
+      ExtensionContext context, LinkedHashMap<String, String> attributes) {
+    final src = attributes['src'];
     if (src == null) {
       return false;
     }
 
+    final uri = Uri.tryParse(src);
+    if (uri == null) {
+      return false;
+    }
+
     return context.elementName == "img" &&
-        networkSchemas.contains(src.scheme) &&
-        (networkDomains == null || networkDomains!.contains(src.host)) &&
-        (extension == null || src.path.endsWith(".$extension"));
+        networkSchemas.contains(uri.scheme) &&
+        (networkDomains == null || networkDomains!.contains(uri.host)) &&
+        (extension == null || uri.path.endsWith(".$extension"));
   }
 
   /// Matches an <img> tag with an svg asset image
-  bool _matchesSvgAssetUri(ExtensionContext context) {
-    final attributes = context.attributes;
-
+  bool _matchesSvgAssetUri(
+      ExtensionContext context, LinkedHashMap<String, String> attributes) {
+    final src = attributes['src'];
     return context.elementName == "img" &&
-        attributes['src'] != null &&
-        attributes['src']!.startsWith(assetSchema) &&
-        attributes['src']!.endsWith(".$extension");
+        src != null &&
+        src.startsWith(assetSchema) &&
+        src.endsWith(".$extension");
   }
 
   @override
   StyledElement prepare(
       ExtensionContext context, List<StyledElement> children) {
     if (context.elementName == "svg") {
-      final parsedWidth = double.tryParse(context.attributes['width'] ?? "");
-      final parsedHeight = double.tryParse(context.attributes['height'] ?? "");
+      final attributes = context.attributes;
+      final parsedWidth = double.tryParse(attributes["width"] ?? "");
+      final parsedHeight = double.tryParse(attributes["height"] ?? "");
 
       return SvgTagElement(
         name: context.elementName,
@@ -113,8 +114,9 @@ class SvgHtmlExtension extends HtmlExtension {
     }
 
     if (context.elementName == "img") {
-      final parsedWidth = double.tryParse(context.attributes['width'] ?? "");
-      final parsedHeight = double.tryParse(context.attributes['height'] ?? "");
+      final attributes = context.attributes;
+      final parsedWidth = double.tryParse(attributes["width"] ?? "");
+      final parsedHeight = double.tryParse(attributes["height"] ?? "");
 
       return ImageElement(
         name: context.elementName,
@@ -122,8 +124,8 @@ class SvgHtmlExtension extends HtmlExtension {
         node: context.node,
         children: children,
         style: Style(),
-        src: context.attributes['src'] ?? "",
-        alt: context.attributes['alt'],
+        src: attributes["src"],
+        alt: attributes["title"] ?? attributes["alt"],
         width: parsedWidth != null ? Width(parsedWidth) : null,
         height: parsedHeight != null ? Height(parsedHeight) : null,
       );
@@ -139,11 +141,12 @@ class SvgHtmlExtension extends HtmlExtension {
     if (context.elementName == "svg") {
       widget = _renderSvgTag(context);
     } else if (context.styledElement is ImageElement) {
-      if (_matchesSvgAssetUri(context)) {
+      final attributes = context.attributes;
+      if (_matchesSvgAssetUri(context, attributes)) {
         widget = _renderAssetSvg(context);
-      } else if (_matchesSvgDataUri(context)) {
+      } else if (_matchesSvgDataUri(context, attributes)) {
         widget = _renderDataSvg(context);
-      } else if (_matchesSvgNetworkSource(context)) {
+      } else if (_matchesSvgNetworkSource(context, attributes)) {
         widget = _renderNetworkSvg(context);
       }
     }
@@ -177,7 +180,7 @@ class SvgHtmlExtension extends HtmlExtension {
       width: element.width,
       height: element.height,
     ).merge(context.styledElement!.style);
-    final dataUri = _dataUriFormat.firstMatch(element.src);
+    final dataUri = _dataUriFormat.firstMatch(element.src!);
     final data = dataUri?.namedGroup('data');
     if (data == null) return const SizedBox(height: 0, width: 0);
 
@@ -204,7 +207,7 @@ class SvgHtmlExtension extends HtmlExtension {
     ).merge(context.styledElement!.style);
 
     return SvgPicture.network(
-      element.src,
+      element.src!,
       width: imageStyle.width?.value,
       height: imageStyle.height?.value,
     );
@@ -218,7 +221,7 @@ class SvgHtmlExtension extends HtmlExtension {
       height: element.height,
     ).merge(context.styledElement!.style);
 
-    final assetPath = element.src.replaceFirst(assetSchema, '');
+    final assetPath = element.src!.replaceFirst(assetSchema, '');
 
     return SvgPicture.asset(
       assetPath,

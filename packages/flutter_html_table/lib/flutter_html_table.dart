@@ -1,5 +1,6 @@
 library flutter_html_table;
 
+import 'dart:collection';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -159,8 +160,9 @@ Widget _layoutCells(
       columnSizes = child.children
           .where((c) => c.name == "col")
           .map((c) {
-            final span = int.tryParse(c.attributes["span"] ?? "1") ?? 1;
-            final colWidth = c.attributes["width"];
+            final attributes = c.attributes;
+            final span = int.tryParse(attributes["span"] ?? "1") ?? 1;
+            final colWidth = attributes["width"];
             return List.generate(span, (index) {
               if (colWidth != null && colWidth.endsWith("%")) {
                 if (!constraints.hasBoundedWidth) {
@@ -341,12 +343,13 @@ class TableCellElement extends StyledElement {
     required super.style,
     required super.node,
   }) {
-    colspan = _parseSpan(this, "colspan");
-    rowspan = _parseSpan(this, "rowspan");
+    final attributes = element?.attributes;
+    colspan = _parseSpan(attributes, "colspan");
+    rowspan = _parseSpan(attributes, "rowspan");
   }
 
-  static int _parseSpan(StyledElement element, String attributeName) {
-    final spanValue = element.attributes[attributeName];
+  static int _parseSpan(LinkedHashMap<Object, String>? attributes, String attributeName) {
+    final spanValue = attributes?[attributeName];
     return int.tryParse(spanValue ?? "1") ?? 1;
   }
 }

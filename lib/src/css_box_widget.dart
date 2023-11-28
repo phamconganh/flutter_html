@@ -98,7 +98,8 @@ class CssBoxWidget extends StatelessWidget {
           child: top
               ? child
               : MediaQuery(
-                  data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+                  data: MediaQuery.of(context)
+                      .copyWith(textScaler: const TextScaler.linear(1)),
                   child: child,
                 ),
         ),
@@ -197,7 +198,8 @@ class CssBoxWidget extends StatelessWidget {
 
 class _CSSBoxRenderer extends MultiChildRenderObjectWidget {
   const _CSSBoxRenderer({
-    Key? key,
+    // ignore: unused_element
+    super.key,
     required super.children,
     required this.display,
     required this.margins,
@@ -209,7 +211,7 @@ class _CSSBoxRenderer extends MultiChildRenderObjectWidget {
     required this.childIsReplaced,
     required this.emValue,
     required this.shrinkWrap,
-  }) : super(key: key);
+  });
 
   /// The Display type of the element
   final Display display;
@@ -465,7 +467,8 @@ class RenderCSSBox extends RenderBox
     properties.add(DiagnosticsProperty<Size>('_borderSize', _borderSize));
     properties.add(DiagnosticsProperty<Size>('_paddingSize', _paddingSize));
     properties.add(EnumProperty('_textDirection', _textDirection));
-    properties.add(DiagnosticsProperty<bool>('_childIsReplaced', _childIsReplaced));
+    properties
+        .add(DiagnosticsProperty<bool>('_childIsReplaced', _childIsReplaced));
     properties.add(DiagnosticsProperty<bool>('_shrinkWrap', _shrinkWrap));
   }
 
@@ -799,9 +802,9 @@ extension Normalize on Dimension {
 }
 
 double _calculateEmValue(Style style, BuildContext buildContext) {
-  return (style.fontSize?.emValue ?? 16) *
-      MediaQuery.textScaleFactorOf(buildContext) *
-      MediaQuery.of(buildContext).devicePixelRatio;
+  return MediaQuery.textScalerOf(buildContext).scale(
+      (style.fontSize?.emValue ?? 16) *
+          MediaQuery.of(buildContext).devicePixelRatio);
 }
 
 class CSSBoxParentData extends ContainerBoxParentData<RenderBox> {}

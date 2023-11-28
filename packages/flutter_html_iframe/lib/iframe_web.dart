@@ -20,32 +20,27 @@ class IframeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final givenWidth =
-        double.tryParse(extensionContext.attributes['width'] ?? "");
-    final givenHeight =
-        double.tryParse(extensionContext.attributes['height'] ?? "");
+    final attributes = extensionContext.attributes;
+    final givenWidth = double.tryParse(attributes['width'] ?? "");
+    final givenHeight = double.tryParse(attributes['height'] ?? "");
+
+    final width = givenWidth ?? (givenHeight ?? 150) * 2;
+    final height = givenHeight ?? (givenWidth ?? 300) / 2;
 
     final iframe = createElementTag('iframe')
-      ..setAttribute(
-          'width', (givenWidth ?? (givenHeight ?? 150) * 2).toString())
-      ..setAttribute(
-          'height', (givenHeight ?? (givenWidth ?? 300) / 2).toString())
-      ..setAttribute('src', extensionContext.attributes['src'] ?? '')
-      // ..width = (givenWidth ?? (givenHeight ?? 150) * 2).toString()
-      // ..height = (givenHeight ?? (givenWidth ?? 300) / 2).toString()
-      // ..src = extensionContext.attributes['src']
+      ..setAttribute('width', width.toString())
+      ..setAttribute('height', height.toString())
+      ..setAttribute('src', attributes['src'] ?? '')
+      // ..width = width.toString()
+      // ..height = height.toString()
+      // ..src = attributes['src']
       ..style.border = 'none';
     final String createdViewId = _getRandString(10);
     ui.platformViewRegistry
         .registerViewFactory(createdViewId, (int viewId) => iframe);
     return SizedBox(
-      width: double.tryParse(extensionContext.attributes['width'] ?? "") ??
-          (double.tryParse(extensionContext.attributes['height'] ?? "") ??
-                  150) *
-              2,
-      height: double.tryParse(extensionContext.attributes['height'] ?? "") ??
-          (double.tryParse(extensionContext.attributes['width'] ?? "") ?? 300) /
-              2,
+      width: width,
+      height: height,
       child: CssBoxWidget(
         style: extensionContext.styledElement!.style,
         childIsReplaced: true,

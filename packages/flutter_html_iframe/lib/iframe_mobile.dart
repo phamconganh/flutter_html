@@ -18,7 +18,8 @@ class IframeWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final WebViewController controller = WebViewController();
 
-    final sandboxMode = extensionContext.attributes["sandbox"];
+    final attributes = extensionContext.attributes;
+    final sandboxMode = attributes["sandbox"];
     controller.setJavaScriptMode(
         sandboxMode == null || sandboxMode == "allow-scripts"
             ? JavaScriptMode.unrestricted
@@ -29,10 +30,8 @@ class IframeWidget extends StatelessWidget {
     }
 
     final UniqueKey key = UniqueKey();
-    final givenWidth =
-        double.tryParse(extensionContext.attributes['width'] ?? "");
-    final givenHeight =
-        double.tryParse(extensionContext.attributes['height'] ?? "");
+    final givenWidth = double.tryParse(attributes['width'] ?? "");
+    final givenHeight = double.tryParse(attributes['height'] ?? "");
 
     return SizedBox(
       width: givenWidth ?? (givenHeight ?? 150) * 2,
@@ -43,7 +42,7 @@ class IframeWidget extends StatelessWidget {
         child: WebViewWidget(
           controller: controller
             ..loadRequest(
-                Uri.tryParse(extensionContext.attributes['src'] ?? "") ??
+                Uri.tryParse(attributes['src'] ?? "") ??
                     Uri()),
           key: key,
           gestureRecognizers: {Factory(() => VerticalDragGestureRecognizer())},

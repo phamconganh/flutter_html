@@ -1278,8 +1278,10 @@ class ExpressionMapping {
       case TextAlign.center:
         return Alignment.center;
       case TextAlign.start:
+      case TextAlign.left:
         return Alignment.centerLeft;
       case TextAlign.end:
+      case TextAlign.right:
         return Alignment.centerRight;
       default:
     }

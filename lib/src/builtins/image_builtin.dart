@@ -1,8 +1,8 @@
+import 'dart:collection';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_html/src/tree/image_element.dart';
 
 class ImageBuiltIn extends HtmlExtension {
   final String? dataEncoding;
@@ -46,16 +46,21 @@ class ImageBuiltIn extends HtmlExtension {
       return false;
     }
 
-    return (_matchesNetworkImage(context) && handleNetworkImages) ||
-        (_matchesAssetImage(context) && handleAssetImages) ||
-        (_matchesBase64Image(context) && handleDataImages);
+    final attributes = context.attributes;
+    return (_matchesNetworkImage(context, attributes: attributes) &&
+            handleNetworkImages) ||
+        (_matchesAssetImage(context, attributes: attributes) &&
+            handleAssetImages) ||
+        (_matchesBase64Image(context, attributes: attributes) &&
+            handleDataImages);
   }
 
   @override
   StyledElement prepare(
       ExtensionContext context, List<StyledElement> children) {
-    final parsedWidth = double.tryParse(context.attributes["width"] ?? "");
-    final parsedHeight = double.tryParse(context.attributes["height"] ?? "");
+    final attributes = context.attributes;
+    final parsedWidth = double.tryParse(attributes["width"] ?? "");
+    final parsedHeight = double.tryParse(attributes["height"] ?? "");
 
     return ImageElement(
       name: context.elementName,
@@ -63,8 +68,8 @@ class ImageBuiltIn extends HtmlExtension {
       style: Style(),
       node: context.node,
       elementId: context.id,
-      src: context.attributes["src"]!,
-      alt: context.attributes["alt"],
+      src: attributes["src"],
+      alt: attributes["title"] ?? attributes["alt"],
       width: parsedWidth != null ? Width(parsedWidth) : null,
       height: parsedHeight != null ? Height(parsedHeight) : null,
     );
@@ -104,14 +109,19 @@ class ImageBuiltIn extends HtmlExtension {
   static RegExp get dataUriFormat => RegExp(
       r"^(?<scheme>data):(?<mime>image/[\w+\-.]+);*(?<encoding>base64)?,\s*(?<data>.*)");
 
-  bool _matchesBase64Image(ExtensionContext context) {
-    final attributes = context.attributes;
+  bool _matchesBase64Image(ExtensionContext context,
+      {LinkedHashMap<String, String>? attributes}) {
+    ImageElement? element;
+    if (context.styledElement is ImageElement) {
+      element = context.styledElement as ImageElement;
+    }
+    final src = element?.src ?? attributes?['src'];
 
-    if (attributes['src'] == null) {
+    if (src == null) {
       return false;
     }
 
-    final dataUri = dataUriFormat.firstMatch(attributes['src']!);
+    final dataUri = dataUriFormat.firstMatch(src);
 
     return context.elementName == "img" &&
         dataUri != null &&
@@ -122,40 +132,52 @@ class ImageBuiltIn extends HtmlExtension {
             dataUri.namedGroup('encoding') == dataEncoding);
   }
 
-  bool _matchesAssetImage(ExtensionContext context) {
-    final attributes = context.attributes;
+  bool _matchesAssetImage(ExtensionContext context,
+      {LinkedHashMap<String, String>? attributes}) {
+    ImageElement? element;
+    if (context.styledElement is ImageElement) {
+      element = context.styledElement as ImageElement;
+    }
+    final src = element?.src ?? attributes?['src'];
 
     return context.elementName == "img" &&
-        attributes['src'] != null &&
-        !attributes['src']!.endsWith(".svg") &&
-        attributes['src']!.startsWith(assetSchema) &&
+        src != null &&
+        !src.endsWith(".svg") &&
+        src.startsWith(assetSchema) &&
         (fileExtensions == null ||
-            attributes['src']!.endsWithAnyFileExtension(fileExtensions!));
+            src.endsWithAnyFileExtension(fileExtensions!));
   }
 
-  bool _matchesNetworkImage(ExtensionContext context) {
-    final attributes = context.attributes;
-
-    if (attributes['src'] == null) {
-      return false;
+  bool _matchesNetworkImage(ExtensionContext context,
+      {LinkedHashMap<String, String>? attributes}) {
+    ImageElement? element;
+    if (context.styledElement is ImageElement) {
+      element = context.styledElement as ImageElement;
     }
+    final src = element?.src ?? attributes?['src'];
 
-    final src = Uri.tryParse(attributes['src']!);
     if (src == null) {
       return false;
     }
 
+    final uri = Uri.tryParse(src);
+    if (uri == null) {
+      return false;
+    }
+
     return context.elementName == "img" &&
-        networkSchemas.contains(src.scheme) &&
-        !src.path.endsWith(".svg") &&
-        (networkDomains == null || networkDomains!.contains(src.host)) &&
+        networkSchemas.contains(uri.scheme) &&
+        !uri.path.endsWith(".svg") &&
+        (networkDomains == null || networkDomains!.contains(uri.host)) &&
         (fileExtensions == null ||
-            src.path.endsWithAnyFileExtension(fileExtensions!));
+            uri.path.endsWithAnyFileExtension(fileExtensions!));
   }
 
   Widget _base64ImageRender(ExtensionContext context, Style imageStyle) {
     final element = context.styledElement as ImageElement;
-    final decodedImage = base64.decode(element.src.split("base64,")[1].trim());
+    final src = element.src!;
+
+    final decodedImage = base64.decode(src.split("base64,")[1].trim());
 
     return Image.memory(
       decodedImage,
@@ -173,7 +195,8 @@ class ImageBuiltIn extends HtmlExtension {
 
   Widget _assetImageRender(ExtensionContext context, Style imageStyle) {
     final element = context.styledElement as ImageElement;
-    final assetPath = element.src.replaceFirst('asset:', '');
+    final src = element.src!;
+    final assetPath = src.replaceFirst('asset:', '');
 
     return Image.asset(
       assetPath,
@@ -193,12 +216,13 @@ class ImageBuiltIn extends HtmlExtension {
 
   Widget _networkImageRender(ExtensionContext context, Style imageStyle) {
     final element = context.styledElement as ImageElement;
+    final src = element.src!;
 
     return CssBoxWidget(
       style: imageStyle,
       childIsReplaced: true,
       child: Image.network(
-        element.src,
+        src,
         width: imageStyle.width?.value,
         height: imageStyle.height?.value,
         fit: BoxFit.fill,

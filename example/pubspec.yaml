@@ -9,15 +9,22 @@ environment:
 dependencies:
   flutter_html:
     path: ..
-  flutter_html_all:
-    path: ../packages/flutter_html_all
+    # git:
+    #   url: https://github.com/phamconganh/flutter_html
+    #   ref: dev2
+  # flutter_html_all:
+  #   # path: ../packages/flutter_html_all
+  #   git:
+  #     url: https://github.com/phamconganh/flutter_html
+  #     path: packages/flutter_html_all
+  #     ref: dev2
   flutter:
     sdk: flutter
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.1
+  flutter_lints: ^3.0.1
 
 flutter:
 

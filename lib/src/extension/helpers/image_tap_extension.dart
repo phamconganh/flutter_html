@@ -53,6 +53,7 @@ class OnImageTapExtension extends ImageBuiltIn {
     );
 
     final actualImage = children.keys.first;
+    final attributes = actualImage.attributes;
 
     return WidgetSpan(
       child: Builder(builder: (buildContext) {
@@ -66,8 +67,8 @@ class OnImageTapExtension extends ImageBuiltIn {
               MultipleTapGestureDetector.of(buildContext)!.onTap?.call();
             }
             onImageTap(
-              actualImage.attributes['src'],
-              actualImage.attributes,
+              attributes['src'],
+              attributes,
               actualImage.element,
             );
           },
