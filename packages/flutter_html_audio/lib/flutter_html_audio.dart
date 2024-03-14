@@ -1,6 +1,6 @@
 library flutter_html_audio;
 
-import 'package:chewie_audio/chewie_audio.dart';
+import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:video_player/video_player.dart';
@@ -31,7 +31,7 @@ class AudioHtmlExtension extends HtmlExtension {
 }
 
 typedef AudioControllerCallback = void Function(
-    dom.Element?, ChewieAudioController, VideoPlayerController);
+    dom.Element?, ChewieController, VideoPlayerController);
 
 /// A widget used for rendering an audio player in the HTML tree
 class AudioWidget extends StatefulWidget {
@@ -51,7 +51,7 @@ class AudioWidget extends StatefulWidget {
 }
 
 class _AudioWidgetState extends State<AudioWidget> {
-  ChewieAudioController? chewieAudioController;
+  ChewieController? chewieController;
   VideoPlayerController? audioController;
   late final List<String?> sources;
 
@@ -69,7 +69,7 @@ class _AudioWidgetState extends State<AudioWidget> {
       final uri = Uri.tryParse(src);
       if (uri != null) {
         audioController = VideoPlayerController.networkUrl(uri);
-        chewieAudioController = ChewieAudioController(
+        chewieController = ChewieController(
           videoPlayerController: audioController!,
           autoPlay: attributes['autoplay'] != null,
           looping: attributes['loop'] != null,
@@ -79,7 +79,7 @@ class _AudioWidgetState extends State<AudioWidget> {
         );
         widget.callback?.call(
           widget.context.element,
-          chewieAudioController!,
+          chewieController!,
           audioController!,
         );
       }
@@ -89,7 +89,7 @@ class _AudioWidgetState extends State<AudioWidget> {
 
   @override
   void dispose() {
-    chewieAudioController?.dispose();
+    chewieController?.dispose();
     audioController?.dispose();
     super.dispose();
   }
@@ -103,9 +103,7 @@ class _AudioWidgetState extends State<AudioWidget> {
     return CssBoxWidget(
       style: widget.context.styledElement!.style,
       childIsReplaced: true,
-      child: ChewieAudio(
-        controller: chewieAudioController!,
-      ),
+      child: Chewie(controller: chewieController!),
     );
   }
 }
