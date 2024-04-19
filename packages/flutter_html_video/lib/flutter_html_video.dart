@@ -1,5 +1,7 @@
 library flutter_html_video;
 
+import 'dart:math';
+
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,10 +15,12 @@ import 'dart:io';
 class VideoHtmlExtension extends HtmlExtension {
   final VideoControllerCallback? videoControllerCallback;
   final OptionsTranslation? optionsTranslation;
+  final BoxConstraints? constraints;
 
   const VideoHtmlExtension({
     this.videoControllerCallback,
     this.optionsTranslation,
+    this.constraints,
   });
 
   @override
@@ -43,6 +47,7 @@ class VideoWidget extends StatefulWidget {
   final List<DeviceOrientation>? deviceOrientationsOnEnterFullScreen;
   final List<DeviceOrientation> deviceOrientationsAfterFullScreen;
   final OptionsTranslation? optionsTranslation;
+  final BoxConstraints? constraints;
 
   const VideoWidget({
     Key? key,
@@ -51,6 +56,7 @@ class VideoWidget extends StatefulWidget {
     this.deviceOrientationsOnEnterFullScreen,
     this.deviceOrientationsAfterFullScreen = DeviceOrientation.values,
     this.optionsTranslation,
+    this.constraints,
   }) : super(key: key);
 
   @override
@@ -60,6 +66,7 @@ class VideoWidget extends StatefulWidget {
 class _VideoWidgetState extends State<VideoWidget> {
   ChewieController? _chewieController;
   VideoPlayerController? _videoController;
+  late final List<String?> sources;
   double? _width;
   double? _height;
 
@@ -68,7 +75,7 @@ class _VideoWidgetState extends State<VideoWidget> {
     final attributes = widget.context.attributes;
     final src = attributes['src'];
 
-    final sources = <String?>[
+    sources = <String?>[
       if (src != null) src,
       ...ReplacedElement.parseMediaSources(widget.context.node.children),
     ];
@@ -77,10 +84,22 @@ class _VideoWidgetState extends State<VideoWidget> {
     final givenHeight = double.tryParse(attributes['height'] ?? "");
 
     if (sources.isNotEmpty && sources.first != null) {
-      _width = givenWidth ?? (givenHeight ?? 150) * 2;
-      _height = givenHeight ?? (givenWidth ?? 300) / 2;
-      Uri? sourceUri = Uri.tryParse(sources.first!);
+      final src = sources.first!;
+      Uri? sourceUri = Uri.tryParse(src);
       if (sourceUri != null) {
+        final constraints = widget.constraints;
+        if (constraints != null) {
+          _width = min(
+              max(givenWidth ?? (givenHeight ?? 150) * 2, constraints.minWidth),
+              constraints.maxWidth);
+          _height = min(
+              max(givenHeight ?? (givenWidth ?? 300) / 2,
+                  constraints.minHeight),
+              constraints.maxHeight);
+        } else {
+          _width = givenWidth ?? (givenHeight ?? 150) * 2;
+          _height = givenHeight ?? (givenWidth ?? 300) / 2;
+        }
         switch (sourceUri.scheme) {
           case 'asset':
             _videoController = VideoPlayerController.asset(sourceUri.path);
