@@ -20,10 +20,11 @@ dependencies:
   web: '>=1.1.1 < 2.0.0'
   webview_flutter: '>=4.0.0 <5.0.0'
 
+  material_ui: any
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
 
 funding:
   - https://github.com/sponsors/Sub6Resources

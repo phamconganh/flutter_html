@@ -19,10 +19,11 @@ dependencies:
       ref: dev2
   flutter_math_fork: '>=0.7.0 <1.0.0'
 
+  material_ui: any
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
 
 funding:
   - https://github.com/sponsors/Sub6Resources

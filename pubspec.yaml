@@ -23,12 +23,16 @@ dependencies:
   flutter:
     sdk: flutter
 
+  material_ui: any
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
   meta: ^1.15.0
-  melos: ^6.3.2
+  melos: ^8.5.0
+
+  cupertino_ui: any
 
 screenshots:
   - description: 'An example of the output produced by flutter_html'
