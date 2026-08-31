@@ -1,6 +1,8 @@
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_html/src/css_parser.dart';
+
+export 'package:flutter_html/src/colors.dart';
 
 //Export Style value-unit APIs
 export 'package:flutter_html/src/style/display.dart';
@@ -281,15 +283,16 @@ class Style {
     }
   }
 
-  static Map<String, Style> fromThemeData(ThemeData theme) => {
-        'h1': Style.fromTextStyle(theme.textTheme.displayLarge!),
-        'h2': Style.fromTextStyle(theme.textTheme.displayMedium!),
-        'h3': Style.fromTextStyle(theme.textTheme.displaySmall!),
-        'h4': Style.fromTextStyle(theme.textTheme.headlineMedium!),
-        'h5': Style.fromTextStyle(theme.textTheme.headlineSmall!),
-        'h6': Style.fromTextStyle(theme.textTheme.titleLarge!),
-        'body': Style.fromTextStyle(theme.textTheme.bodyMedium!),
-      };
+  /// TODO: move to flutter_html/style.dart
+  // static Map<String, Style> fromThemeData(ThemeData theme) => {
+  //       'h1': Style.fromTextStyle(theme.textTheme.displayLarge!),
+  //       'h2': Style.fromTextStyle(theme.textTheme.displayMedium!),
+  //       'h3': Style.fromTextStyle(theme.textTheme.displaySmall!),
+  //       'h4': Style.fromTextStyle(theme.textTheme.headlineMedium!),
+  //       'h5': Style.fromTextStyle(theme.textTheme.headlineSmall!),
+  //       'h6': Style.fromTextStyle(theme.textTheme.titleLarge!),
+  //       'body': Style.fromTextStyle(theme.textTheme.bodyMedium!),
+  //     };
 
   static Map<String, Style> fromCss(
       String css, OnCssParseError? onCssParseError) {
@@ -382,7 +385,7 @@ class Style {
         : lineHeight;
 
     return child.copyWith(
-      backgroundColor: child.backgroundColor != Colors.transparent
+      backgroundColor: child.backgroundColor != transparent
           ? child.backgroundColor
           : backgroundColor,
       color: child.color ?? color,

@@ -1,8 +1,7 @@
 import 'package:csslib/parser.dart' as css_parser;
 import 'package:csslib/visitor.dart' as css;
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_html/src/builtins/details_element_builtin.dart';
 import 'package:flutter_html/src/builtins/image_builtin.dart';
 import 'package:flutter_html/src/builtins/interactive_element_builtin.dart';
 import 'package:flutter_html/src/builtins/ruby_builtin.dart';
@@ -65,10 +64,17 @@ class HtmlParser extends StatefulWidget {
     const VerticalAlignBuiltIn(),
     const InteractiveElementBuiltIn(),
     const RubyBuiltIn(),
-    const DetailsElementBuiltIn(),
     const StyledElementBuiltIn(),
     const TextBuiltIn(),
   ];
+
+  static void registerBuiltIns(HtmlExtension registBuiltIn) {
+    builtIns.add(registBuiltIn);
+  }
+
+  static void unregisterBuiltIns(HtmlExtension unregistBuiltIn) {
+    builtIns.remove(unregistBuiltIn);
+  }
 
   /// [parseHTML] converts a string of HTML to a DOM element using the dart `html` library.
   static html.Element parseHTML(String data) {

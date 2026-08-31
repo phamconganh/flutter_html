@@ -4,7 +4,7 @@ version: 3.0.0
 homepage: https://github.com/Sub6Resources/flutter_html
 
 environment:
-  sdk: '>=3.2.0 <4.0.0'
+  sdk: '>=3.13.2 <4.0.0'
   flutter: '>=3.0.0'
 
 dependencies:
@@ -23,8 +23,6 @@ dependencies:
   flutter:
     sdk: flutter
 
-  material_ui: any
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -33,6 +31,7 @@ dev_dependencies:
   melos: ^8.5.0
 
   cupertino_ui: any
+  material_ui: any
 
 screenshots:
   - description: 'An example of the output produced by flutter_html'
@@ -54,3 +53,13 @@ topics:
   - css
   - widgets
   - layout
+
+workspace:
+  - packages/flutter_html_all
+  - packages/flutter_html_audio
+  - packages/flutter_html_iframe
+  - packages/flutter_html_material_ui
+  - packages/flutter_html_math
+  - packages/flutter_html_svg
+  - packages/flutter_html_table
+  - packages/flutter_html_video

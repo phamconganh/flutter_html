@@ -1,5 +1,5 @@
 import 'package:flutter/gestures.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_html/src/utils.dart';
 import 'package:html/dom.dart' as dom;
@@ -28,9 +28,9 @@ class InteractiveElementBuiltIn extends HtmlExtension {
       children: children,
       href: context.attributes['href'],
       style: Style(
-        color: Colors.blue,
+        color: blue,
         textDecoration: TextDecoration.underline,
-        textDecorationColor: Colors.blue,
+        textDecorationColor: blue,
       ),
       node: context.node,
       elementId: context.id,

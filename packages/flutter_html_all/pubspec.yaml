@@ -3,9 +3,10 @@ description: All optional flutter_html widgets, bundled into a single package.
 version: 3.0.0
 homepage: https://github.com/Sub6Resources/flutter_html
 publish_to: none
+resolution: workspace
 
 environment:
-  sdk: ">=3.2.0 <4.0.0"
+  sdk: ">=3.13.2 <4.0.0"
   flutter: ">=3.0.0"
 
 dependencies:

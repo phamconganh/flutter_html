@@ -1,4 +1,4 @@
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/painting.dart';
 import 'package:flutter_html/src/style/length.dart';
 
 class HtmlPadding extends LengthOrPercent {

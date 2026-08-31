@@ -3,9 +3,10 @@ library;
 import 'dart:math';
 
 import 'package:chewie/chewie.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_html/src/colors.dart';
 import 'package:video_player/video_player.dart';
 import 'package:html/dom.dart' as dom;
 import 'dart:io';
@@ -117,7 +118,7 @@ class _VideoWidgetState extends State<VideoWidget> {
           videoPlayerController: _videoController!,
           placeholder: poster != null && poster.isNotEmpty
               ? Image.network(poster)
-              : Container(color: Colors.black),
+              : Container(color: black),
           autoPlay: attributes['autoplay'] != null,
           looping: attributes['loop'] != null,
           showControls: attributes['controls'] != null,

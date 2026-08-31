@@ -1,5 +1,5 @@
-name: flutter_html_svg
-description: This extension package allows the <svg> tag and svg-based img sources to be rendered using the flutter_html package
+name: flutter_html_material_ui
+description: This extension package allows the <details> tag to be rendered using the flutter_html package
 version: 3.0.0
 homepage: https://github.com/Sub6Resources/flutter_html
 publish_to: none
@@ -12,20 +12,17 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  html: '>=0.15.0 <1.0.0'
   # flutter_html: ^3.0.0
   flutter_html:
     git:
-        url: https://github.com/phamconganh/flutter_html
-        ref: dev2
-  flutter_svg: '>=2.0.0 <3.0.0'
+      url: https://github.com/phamconganh/flutter_html
+      ref: dev2
+  material_ui: any
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
-  meta: ^1.15.0
-  material_ui: any
 
 funding:
   - https://github.com/sponsors/Sub6Resources
@@ -33,5 +30,5 @@ funding:
 topics:
   - html
   - css
-  - svg
-  - images
+  - audio
+  - layout

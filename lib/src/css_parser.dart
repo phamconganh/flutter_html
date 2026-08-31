@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:csslib/visitor.dart' as css;
 import 'package:csslib/parser.dart' as cssparser;
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/painting.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_html/src/utils.dart';
 
@@ -108,8 +108,8 @@ Style declarationsToStyle(Map<String, List<css.Expression>> declarations) {
                 BorderSide(
                   width: ExpressionMapping.expressionToBorderWidth(borderWidth),
                   style: ExpressionMapping.expressionToBorderStyle(borderStyle),
-                  color: ExpressionMapping.expressionToColor(borderColor) ??
-                      Colors.black,
+                  color:
+                      ExpressionMapping.expressionToColor(borderColor) ?? black,
                 ),
             right: style.border?.right ?? BorderSide.none,
             top: style.border?.top ?? BorderSide.none,
@@ -167,8 +167,8 @@ Style declarationsToStyle(Map<String, List<css.Expression>> declarations) {
                 BorderSide(
                   width: ExpressionMapping.expressionToBorderWidth(borderWidth),
                   style: ExpressionMapping.expressionToBorderStyle(borderStyle),
-                  color: ExpressionMapping.expressionToColor(borderColor) ??
-                      Colors.black,
+                  color:
+                      ExpressionMapping.expressionToColor(borderColor) ?? black,
                 ),
             top: style.border?.top ?? BorderSide.none,
             bottom: style.border?.bottom ?? BorderSide.none,
@@ -226,8 +226,8 @@ Style declarationsToStyle(Map<String, List<css.Expression>> declarations) {
                 BorderSide(
                   width: ExpressionMapping.expressionToBorderWidth(borderWidth),
                   style: ExpressionMapping.expressionToBorderStyle(borderStyle),
-                  color: ExpressionMapping.expressionToColor(borderColor) ??
-                      Colors.black,
+                  color:
+                      ExpressionMapping.expressionToColor(borderColor) ?? black,
                 ),
             bottom: style.border?.bottom ?? BorderSide.none,
           );
@@ -285,8 +285,8 @@ Style declarationsToStyle(Map<String, List<css.Expression>> declarations) {
                 BorderSide(
                   width: ExpressionMapping.expressionToBorderWidth(borderWidth),
                   style: ExpressionMapping.expressionToBorderStyle(borderStyle),
-                  color: ExpressionMapping.expressionToColor(borderColor) ??
-                      Colors.black,
+                  color:
+                      ExpressionMapping.expressionToColor(borderColor) ?? black,
                 ),
           );
           style.border = newBorder;
@@ -827,21 +827,17 @@ class ExpressionMapping {
     }
     return Border(
         top: BorderSide(
-            width: top.width,
-            color: top.color ?? Colors.black,
-            style: top.style),
+            width: top.width, color: top.color ?? black, style: top.style),
         right: BorderSide(
             width: right.width,
-            color: right.color ?? Colors.black,
+            color: right.color ?? black,
             style: right.style),
         bottom: BorderSide(
             width: bottom.width,
-            color: bottom.color ?? Colors.black,
+            color: bottom.color ?? black,
             style: bottom.style),
         left: BorderSide(
-            width: left.width,
-            color: left.color ?? Colors.black,
-            style: left.style));
+            width: left.width, color: left.color ?? black, style: left.style));
   }
 
   static double expressionToBorderWidth(css.Expression? value) {
@@ -1506,7 +1502,7 @@ class ExpressionMapping {
               1.0, parsedHsl.first!, parsedHsl[1]!, parsedHsl.last!)
           .toColor();
     } else {
-      return Colors.black;
+      return black;
     }
   }
 

@@ -3,9 +3,10 @@ description: This extension package allows the <iframe> tag to be rendered using
 version: 3.0.0
 homepage: https://github.com/Sub6Resources/flutter_html
 publish_to: none
+resolution: workspace
 
 environment:
-  sdk: ">=3.2.0 <4.0.0"
+  sdk: ">=3.13.2 <4.0.0"
   flutter: ">=3.0.0"
 
 dependencies:
@@ -20,7 +21,6 @@ dependencies:
   web: '>=1.1.1 < 2.0.0'
   webview_flutter: '>=4.0.0 <5.0.0'
 
-  material_ui: any
 dev_dependencies:
   flutter_test:
     sdk: flutter

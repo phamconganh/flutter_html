@@ -1,7 +1,7 @@
 import 'dart:collection';
 
 import 'package:collection/collection.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_html/src/anchor.dart';
 import 'package:flutter_html/src/css_box_widget.dart';
 import 'package:flutter_html/src/css_parser.dart';
@@ -353,8 +353,8 @@ class StyledElementBuiltIn extends HtmlExtension {
         break;
       case "mark":
         styledElement.style = Style(
-          color: Colors.black,
-          backgroundColor: Colors.yellow,
+          color: black,
+          backgroundColor: yellow,
         );
         break;
       case "nav":

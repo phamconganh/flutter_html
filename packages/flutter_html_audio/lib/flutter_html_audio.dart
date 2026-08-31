@@ -3,7 +3,7 @@ library;
 // import 'dart:math';
 
 import 'package:chewie_audio/chewie_audio.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:video_player/video_player.dart';
 import 'package:html/dom.dart' as dom;

@@ -3,7 +3,7 @@ library;
 import 'dart:collection';
 import 'dart:math';
 
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 
